@@ -1,0 +1,161 @@
+"use client";
+
+import { Box, Container, Grid2 } from "@mui/material";
+import { Button, InputDate, RadioGroup, Text } from "@/components/common";
+import typography from "@/shared/theme/typography-theme";
+import {
+  HpvVaccinalCoverageChallengeReachGoalChart,
+  HpvVaccinalCoverageChart,
+  HpvVaccinalCoverageNotConsentedChart,
+  HpvVaccinalCoverageNumberVaccinationsAdministeredChart,
+  HpvVaccinalCoverageRangeCoverageHpvChart,
+  HpvVaccinalCoverageStateRankingChart,
+} from "@/components/HpvVaccinalCoverage/indicators";
+import { useIndicators } from "@/hooks";
+import dateUtils from "@/shared/date";
+import { useEffect, useState } from "react";
+import { Dayjs } from "dayjs";
+import { GetHpvIndicatorsDto } from "@/domain/entities/indicators";
+
+const HpvVaccinalCoverage = () => {
+  const [filterOption, setFilterOption] = useState("1");
+  const [filter, setFilter] = useState<{
+    year: Dayjs;
+    mounth: Dayjs;
+  }>({
+    year: dateUtils(),
+    mounth: dateUtils(),
+  });
+  const [selectedFilters, setSelectedFilters] = useState<GetHpvIndicatorsDto>({
+    year: dateUtils().format("YYYY"),
+  });
+
+  const { hpvIndicators, hpvIndicatorsLoading } = useIndicators({
+    getHpvIndicators: {
+      enabled: true,
+      params: selectedFilters,
+    },
+  });
+
+  const handleFilter = () => {
+    if (filterOption == "1") {
+      setSelectedFilters({
+        year: filter.year.format("YYYY"),
+      });
+    } else {
+      setSelectedFilters({
+        year: dateUtils().format("YYYY"),
+        mounth: filter.mounth.format("MM"),
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (filterOption === "0") {
+      setFilter((value) => ({
+        ...value,
+        year: dateUtils(),
+      }));
+    }
+  }, [filterOption]);
+
+  return (
+    <Container>
+      <Box>
+        <Text component="h1" {...typography.title.h1l}>
+          Cobertura vacinal (HPV)
+        </Text>
+        <Text {...typography.paragraph.l2} color="#838383" mt="2.8rem">
+          Última atualização dos dados em {dateUtils().format("DD/MM/YYYY")}
+        </Text>
+      </Box>
+      <Box mt="1.2rem">
+        <RadioGroup
+          row
+          value={filterOption}
+          options={[
+            { value: "0", label: "Mensal" },
+            { value: "1", label: "Anual" },
+          ]}
+          onChange={(value) => setFilterOption(value as string)}
+        />
+        <Box display="flex" gap="2.4rem" mt="2rem">
+          {filterOption == "0" && (
+            <Box>
+              <InputDate
+                value={filter.mounth}
+                views={["month"]}
+                fullWidth
+                label="Mês"
+                size="small"
+                maxDate={dateUtils()}
+                onChange={(e) =>
+                  setFilter((value) => ({ ...value, mounth: e || dateUtils() }))
+                }
+              />
+            </Box>
+          )}
+          <Box>
+            <InputDate
+              value={filter.year}
+              views={["year"]}
+              fullWidth
+              label="Ano"
+              size="small"
+              disabled={filterOption == "0"}
+              maxDate={dateUtils().endOf("year")}
+              minDate={dateUtils("2024-01-01")}
+              onChange={(e) =>
+                setFilter((value) => ({ ...value, year: e || dateUtils() }))
+              }
+            />
+          </Box>
+          <Button variant="contained" onClick={handleFilter}>
+            Filtrar
+          </Button>
+        </Box>
+      </Box>
+      <Box>
+        <Grid2 container spacing="2.4rem" mt="1.5rem">
+          <Grid2 size={{ xs: 12 }}>
+            <HpvVaccinalCoverageChart
+              data={hpvIndicators?.coverage}
+              loading={hpvIndicatorsLoading}
+            />
+          </Grid2>
+          <Grid2 size={{ xs: 12, md: 4 }}>
+            <HpvVaccinalCoverageStateRankingChart
+              loading={hpvIndicatorsLoading}
+            />
+          </Grid2>
+          <Grid2 size={{ xs: 12, md: 8 }}>
+            <HpvVaccinalCoverageChallengeReachGoalChart
+              data={hpvIndicators?.challengeGoal}
+              loading={hpvIndicatorsLoading}
+            />
+          </Grid2>
+          <Grid2 size={{ xs: 12, md: 6 }}>
+            <HpvVaccinalCoverageNumberVaccinationsAdministeredChart
+              data={hpvIndicators?.numberVaccinationsAdministered}
+              loading={hpvIndicatorsLoading}
+            />
+          </Grid2>
+          <Grid2 size={{ xs: 12, md: 6 }}>
+            <HpvVaccinalCoverageNotConsentedChart
+              data={hpvIndicators?.notConsent}
+              loading={hpvIndicatorsLoading}
+            />
+          </Grid2>
+          <Grid2 size={{ xs: 12 }}>
+            <HpvVaccinalCoverageRangeCoverageHpvChart
+              data={hpvIndicators?.coverageRange}
+              loading={hpvIndicatorsLoading}
+            />
+          </Grid2>
+        </Grid2>
+      </Box>
+    </Container>
+  );
+};
+
+export default HpvVaccinalCoverage;

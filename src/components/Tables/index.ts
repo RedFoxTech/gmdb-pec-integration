@@ -1,0 +1,10 @@
+export { default as TablePatients } from "./TablePatients";
+export { default as TableUsers } from "./TableUsers";
+export { default as TableAgenda } from "./TableAgenda";
+export { default as TablePatientScheduling } from "./TablePatientScheduling";
+export { default as TableCampaign } from "./TableCampaign";
+export { default as TablePatientsCapaign } from "./TablePatientsCapaign";
+export { default as TableEarlyDetection } from "./TableEarlyDetection";
+export { default as TableExamAppointments } from "./TableExamAppointments";
+export { default as TableUnitsByVaccinationRanking } from "./TableUnitsByVaccinationRanking";
+export { default as TableAcsByVaccinationRanking } from "./TableAcsByVaccinationRanking";

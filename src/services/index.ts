@@ -1,0 +1,14 @@
+export { AuthService } from "./auth";
+export { PatientService } from "./patient";
+export { UnitService } from "./unit";
+export { UserService } from "./user";
+export { AgendaService } from "./agenda";
+export { PatientSchedulingService } from "./patient-scheduling";
+export { TagService } from "./tag";
+export { SegmentService } from "./segment";
+export { CampaignService } from "./campaign";
+export { AcsService } from "./acs";
+export { CityHallService } from "./city-hall";
+export { IndicatorsService } from "./indicators";
+export { FileService } from "./file";
+export { ExamService as AppointmentService } from "./exam";

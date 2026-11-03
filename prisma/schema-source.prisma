@@ -1,0 +1,232 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  // binaryTargets   = ["native", "darwin", "debian-openssl-1.1.x", "linux-arm64-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
+  previewFeatures = ["relationJoins"]
+  output = "./generated/source"
+}
+
+datasource dbSource {
+  provider = "postgresql"
+  url      = env("DATABASE_SOURCE_URL")
+}
+
+model Patient {
+  idPaciente      BigInt    @id @map("id_paciente")
+  cityHallId      Int       @map("city_hall_id")
+  importVersionId String    @map("import_version_id") @dbSource.Uuid
+  coCidadao       BigInt?   @map("co_cidadao")
+  noCidadao       String?   @map("no_cidadao") @dbSource.VarChar(100)
+  dtNascimento    DateTime? @map("dt_nascimento")
+  idade           String?   @map("idade") @dbSource.VarChar(10)
+  sexo            String?   @map("sexo") @dbSource.VarChar(1)
+  nuCns           String?   @map("cns") @dbSource.VarChar(30)
+  nuCpf           String?   @map("cpf") @dbSource.VarChar(14)
+  noMae           String?   @map("no_mae") @dbSource.VarChar(100)
+  statusCadastro  Int?      @map("status_cadastro")
+  fci             Int?      @map("fci")
+  respFamiliar    String?   @map("resp_familiar") @dbSource.VarChar(100)
+  logradouro      String?   @map("logradouro") @dbSource.VarChar(100)
+  nuLogradouro    String?   @map("nu_logradouro") @dbSource.VarChar(20)
+  bairro          String?   @map("bairro") @dbSource.VarChar(50)
+  cep             String?   @map("cep") @dbSource.VarChar(10)
+  contato         String?   @map("contato") @dbSource.VarChar(20)
+  nuMicroArea     String?   @map("nu_micro_area") @dbSource.VarChar(10)
+  idProfissional  BigInt?   @map("id_profissional")
+  noProfCad       String?   @map("no_prof_cad") @dbSource.VarChar(100)
+  cboAcs          Int?      @map("cbo_acs")
+  idUbs           BigInt?   @map("id_ubs")
+  idEquipe        BigInt?   @map("id_equipe")
+  nuCnes          String?   @map("nu_cnes") @dbSource.VarChar(20)
+  noEquipe        String?   @map("no_equipe") @dbSource.VarChar(100)
+  duplicado       Int?      @map("duplicado")
+  stUnificado     Int?      @map("st_unificado")
+  createdAt       DateTime  @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt       DateTime  @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idPaciente, cityHallId])
+
+  @@map("patients")
+}
+
+model Appointment {
+  idAgendamento  BigInt    @id @map("id_agendamento")
+  cityHallId     Int       @map("city_hall_id")
+  importVersionId String    @map("import_version_id") @dbSource.Uuid
+  idPaciente     BigInt    @map("id_paciente")
+  dtCriacao      DateTime  @map("dt_criacao") @dbSource.Date
+  hrCriacao      DateTime    @map("hr_criacao")  @dbSource.Time(6)
+  dataAgenda     DateTime  @map("data_agenda") @dbSource.Date
+  hrAgendado     DateTime    @map("hr_agendado") @dbSource.Time(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt      DateTime  @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idAgendamento, cityHallId])
+
+  @@map("appointments")
+}
+
+model Dose {
+  idDose               BigInt    @id @map("id_dose")
+  cityHallId           Int       @map("city_hall_id")
+  importVersionId      String    @map("import_version_id") @dbSource.Uuid
+  nuDoseMs             String?   @map("nu_dose_ms") @dbSource.VarChar(20)
+  sgImuno              String?   @map("sg_imuno") @dbSource.VarChar(10)
+  noDoseImunobiologico String?   @map("no_dose_imunobiologico") @dbSource.VarChar(100)
+  createdAt            DateTime  @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt            DateTime  @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idDose, cityHallId])
+
+  @@map("dose")
+}
+
+model Immunobiological {
+  idImuno          BigInt    @id @map("id_imuno")
+  cityHallId       Int       @map("city_hall_id")
+  importVersionId  String    @map("import_version_id") @dbSource.Uuid
+  sgImuno          String?   @map("sg_imuno") @dbSource.VarChar(10)
+  noImunobiologico String?  @map("no_imunobiologico") @dbSource.VarChar(100)
+  nuMs             Int?      @unique @map("nu_ms")
+  createdAt        DateTime  @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt        DateTime  @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idImuno, cityHallId])
+
+  @@map("immunobiological")
+}
+
+model Professional {
+  idProfissional      BigInt     @id @map("id_profissional")
+  cityHallId          Int        @map("city_hall_id")
+  importVersionId     String     @map("import_version_id") @dbSource.Uuid
+  idEquipe            BigInt?    @map("id_equipe")
+  idUnit              String?    @map("id_unit") @dbSource.VarChar(20)
+  noProfissional      String?    @map("no_profissional") @dbSource.VarChar(100)
+  cns                 String?    @dbSource.VarChar(20)
+  nuCbo2002           String?    @map("nu_cbo_2002") @dbSource.VarChar(10)
+  dtDesativacaoLotacao DateTime? @map("dt_desativacao_lotacao")
+  noUnidadeSaude      String?    @map("no_unidade_saude") @dbSource.VarChar(100)
+  ativo               Int        @default(0)
+  createdAt           DateTime   @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt           DateTime   @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idProfissional, cityHallId])
+
+  @@map("professional")
+}
+
+model Unit {
+  idEquipe        BigInt    @id @map("id_equipe")
+  cityHallId      Int       @map("city_hall_id")
+  importVersionId String    @map("import_version_id") @dbSource.Uuid
+  idMunicipio     BigInt?   @map("id_municipio")
+  coIbge          BigInt?   @map("co_ibge")
+  municipio       String?   @dbSource.VarChar(100)
+  idUbs           BigInt?   @map("id_ubs")
+  nuCnes          String?   @map("nu_cnes") @dbSource.VarChar(20)
+  noUnidade       String?   @map("no_unidade") @dbSource.VarChar(100)
+  nuIne           String?   @map("nu_ine") @dbSource.VarChar(20)
+  noEquipe        String?   @map("no_equipe") @dbSource.VarChar(100)
+  tipoEquipe      String?   @map("tipo_equipe") @dbSource.VarChar(50)
+  nuMs            String?   @map("nu_ms") @dbSource.VarChar(20)
+  noTipoEquipe    String?   @map("no_tipo_equipe") @dbSource.VarChar(50)
+  contato         String?   @dbSource.VarChar(20)
+  logradouro      String?   @dbSource.VarChar(100)
+  nuLogradouro    String?   @map("nu_logradouro") @dbSource.VarChar(20)
+  bairro          String?   @dbSource.VarChar(50)
+  cep             String?   @dbSource.VarChar(10)
+  createdAt       DateTime  @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt       DateTime  @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idEquipe, cityHallId])
+
+  @@map("unit")
+}
+
+model Vaccination {
+  id               BigInt     @id @map("id")
+  cityHallId       Int        @map("city_hall_id")
+  importVersionId  String     @map("import_version_id") @dbSource.Uuid
+  idPaciente       BigInt     @map("id_paciente")
+  coSeqImuno       BigInt?    @map("co_seq_imuno")      // raw partner key
+  idImuno          Int?       @map("id_imuno")          // MS identifier
+  noImunobiologico String?    @map("no_imunobiologico") @dbSource.VarChar(100)
+  idDose           BigInt?    @map("id_dose")
+  nuDoseMs         String?    @map("nu_dose_ms") @dbSource.VarChar(20)
+  dose             String?    @dbSource.VarChar(50)
+  noDose           String?    @map("no_dose") @dbSource.VarChar(100)
+  idEquipe         BigInt?    @map("id_equipe")
+  nuCnes           String?    @map("nu_cnes") @dbSource.VarChar(20)
+  idProfissional   BigInt?    @map("id_profissional")
+  idCbo            BigInt?    @map("id_cbo")
+  dtAplicacao      DateTime?  @map("dt_aplicacao")
+  fabricante       String?    @dbSource.VarChar(100)
+  lote             String?    @dbSource.VarChar(50)
+  createdAt        DateTime   @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt        DateTime   @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([id, cityHallId])
+
+  @@map("vaccination")
+}
+
+model ImportVersion {
+  id               String     @id @default(uuid()) @map("id") @dbSource.VarChar(36)
+  cityHallId       Int        @map("city_hall_id")
+  status           String     @map("status") @dbSource.VarChar(20)
+  createdAt        DateTime   @default(now()) @map("created_at") @dbSource.Timestamptz
+
+  @@map("import_version")
+}
+
+model Requested {
+  idAtendSolicitacao  BigInt   @id @map("id_atend_solicitacao")
+  importVersionId     String   @map("import_version_id") @dbSource.Uuid
+  cityHallId          Int      @map("city_hall_id")
+  idPaciente          BigInt   @map("id_paciente")
+  idProfSolicitacao   BigInt?  @map("id_prof_solicitacao")
+  stConsultaAgendada  Int      @default(0) @map("st_consulta_agendada")
+  stCuidadoContinuo   Int      @default(0) @map("st_cuidado_continuo")
+  dtSolicitado        DateTime? @map("dt_solicitado")
+  filtroProcedimento  String?   @map("filtro_procedimento") @dbSource.VarChar(150)
+  createdAt           DateTime @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt           DateTime @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idAtendSolicitacao, cityHallId])
+
+  @@map("requested")
+}
+
+model Collected {
+  idAtendColeta       BigInt    @id @map("id_atend_coleta")
+  importVersionId     String    @map("import_version_id") @dbSource.Uuid
+  cityHallId          Int       @map("city_hall_id")
+  idPaciente          BigInt    @map("id_paciente")
+  idProfColeta        BigInt?   @map("id_prof_coleta")
+  dtColeta            DateTime? @map("dt_coleta") @dbSource.Date
+  filtroProcedimento  String?   @map("filtro_procedimento") @dbSource.VarChar(150)
+  createdAt           DateTime  @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt           DateTime  @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idAtendColeta, cityHallId])
+
+  @@map("collected")
+}
+
+model Evaluated {
+  idAtendAvaliado     BigInt    @id @map("id_atend_avaliado")
+  importVersionId     String    @map("import_version_id") @dbSource.Uuid
+  cityHallId          Int       @map("city_hall_id")
+  idPaciente          BigInt    @map("id_paciente")
+  dtAvaliado          DateTime? @map("dt_avaliado") @dbSource.Date
+  filtroProcedimento  String?   @map("filtro_procedimento") @dbSource.VarChar(150)
+  createdAt           DateTime  @default(now()) @map("created_at") @dbSource.Timestamptz
+  updatedAt           DateTime  @default(now()) @map("updated_at") @dbSource.Timestamptz
+
+  @@unique([idAtendAvaliado, cityHallId])
+
+  @@map("evaluated")
+}

@@ -1,0 +1,29 @@
+export interface PatientQueryEntity {
+  id_paciente: number;
+  co_cidadao?: number;
+  no_cidadao?: string;
+  dt_nascimento?: string;
+  idade?: string;
+  sexo?: string;
+  cns?: string;
+  cpf?: string;
+  no_mae?: string;
+  status_cadastro?: number;
+  fci?: number;
+  resp_familiar?: string;
+  logradouro?: string;
+  nu_logradouro?: string;
+  bairro?: string;
+  cep?: string;
+  contato?: string;
+  nu_micro_area?: string;
+  id_profissional?: number;
+  no_prof_cad?: string;
+  cbo_acs?: number;
+  id_ubs?: number;
+  id_equipe?: number;
+  nu_cnes?: string;
+  no_equipe?: string;
+  duplicado?: number;
+  st_unificado?: number;
+}

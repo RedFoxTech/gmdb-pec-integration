@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  // binaryTargets   = ["native", "darwin", "debian-openssl-1.1.x", "linux-arm64-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
+  previewFeatures = ["relationJoins"]
+  output = "./generated/city-hall"
+}
+
+datasource dbCityHall {
+  provider = "postgresql"
+  url      = env("DATABASE_CITY_HALL")
+}
+
+model Vacinacao {
+  nuCns                         String?      @map("nu_cns") @dbCityHall.VarChar(30)    
+  dtNascimento                  DateTime    @map("dt_nascimento") @dbCityHall.Date        
+  noSexo                        String      @map("no_sexo") @dbCityHall.VarChar(30)    
+  dsLogradouro                  String?     @map("ds_logradouro") @dbCityHall.VarChar(100)    
+  noBairro                      String?     @map("no_bairro") @dbCityHall.VarChar(100)    
+  nuTelefoneCelular             String?     @map("nu_telefone_celular") @dbCityHall.VarChar(18)    
+  dsEmail                       String?     @map("ds_email") @dbCityHall.VarChar(100)    
+  noResponsavel                 String?      @map("no_responsavel") @dbCityHall.VarChar(100)    
+  nuCpfResponsavel              String?     @map("nu_cpf_responsavel") @dbCityHall.VarChar(15)    
+  coLocalidadeUnidadeSaude      Int?        @map("co_localidade_unidade_saude")
+  noUnidadeSaude                String?      @map("no_unidade_saude") @dbCityHall.VarChar(100)    
+  dsCepUnidade                  String?      @map("ds_cep_unidade") @dbCityHall.VarChar(9)    
+  dsLogradouroUnidade           String?      @map("ds_logradouro_unidade") @dbCityHall.VarChar(100)    
+  noLocalidadeUnidade           String?      @map("no_localidade_unidade") @dbCityHall.VarChar(100)    
+  noUfUnidade                   String?      @map("no_uf_unidade") @dbCityHall.VarChar(100)    
+  responsavelUbs                String?     @map("responsavel_ubs") @dbCityHall.VarChar(100)    
+  responsavelVacina             String?     @map("responsavel_vacina") @dbCityHall.VarChar(100)    
+  noImunobiologico              String?      @map("no_imunobiologico") @dbCityHall.VarChar(150)    
+  dtAplicacao                   DateTime?    @map("dt_aplicacao") @dbCityHall.Date
+  coSeqAtend                    Decimal?      @map("co_seq_atend") @dbCityHall.Decimal(18, 2)    
+  coSeqRegistroVacinacao        Decimal?      @map("co_seq_registro_vacinacao") @dbCityHall.Decimal(18, 2)  
+  dtInicio                      DateTime?    @map("dt_inicio") @dbCityHall.Date        
+  nuCpf                         String?      @map("nu_cpf") @dbCityHall.VarChar(15)    
+  noCidadao                     String      @map("no_cidadao") @dbCityHall.VarChar(100)    
+
+  @@id([noCidadao, dtNascimento])
+  @@map("vacinacao_new")
+}
